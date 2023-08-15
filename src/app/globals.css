@@ -21,10 +21,13 @@ Handle on hover
 } */
 
 .card-list{
-  background-color: #E8E8E8 !important
+  /* background-color: #E8E8E8 !important */
 }
 
 .card-list:hover {
+  background-color: #0dcaf0 !important
+}
+.active {
   background-color: #38B2AC !important
 }
 .main-chat {

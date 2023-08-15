@@ -9,6 +9,7 @@ const persistConfig = {
 
 const initialState = {
   listRoom: {},
+  selectedRoom: "",
 };
 
 export const slice = createSlice({
@@ -18,12 +19,23 @@ export const slice = createSlice({
     addListRoom: (state, { payload }) => {
       state.listRoom = payload;
     },
+    addSelectedRoom: (state, { payload }) => {
+      state.selectedRoom = payload;
+    },
+    emptySelectedRoom: (state, { payload }) => {
+      state.selectedRoom = "";
+    },
     emptyListRoom: (state) => {
       state.listRoom = {};
     },
   },
 });
 
-export const { addListRoom, emptyListRoom } = slice.actions;
+export const {
+  addListRoom,
+  emptyListRoom,
+  addSelectedRoom,
+  emptySelectedRoom,
+} = slice.actions;
 
 export const chatPersistReducer = persistReducer(persistConfig, slice.reducer);

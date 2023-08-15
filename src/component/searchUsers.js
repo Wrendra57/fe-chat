@@ -40,6 +40,9 @@ function SearchUsers({ show, setShow }) {
     searchUsersHit({ token: token, nameSearch: searchName.value });
   };
 
+  const createChat = (e)=>{
+    
+  }
   useEffect(() => {
     if (isSuccess) {
       // console.log(data.data);

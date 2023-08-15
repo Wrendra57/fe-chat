@@ -6,22 +6,29 @@ import { Button, Card } from "react-bootstrap";
 import Link from "next/link";
 import Image from "next/image";
 import { useGetListRoomMutation } from "@/app/store/apis/chat";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addSelectedRoom,
+  emptySelectedRoom,
+} from "@/app/store/slices/chatSlice";
 
 function ListRoomChat() {
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
+  const selectedRoom = useSelector((state) => state.chat.selectedRoom);
 
   const [getListRoomHit, { isLoading, isError, error: err, isSuccess, data }] =
     useGetListRoomMutation();
   const [dataResult, setDataResult] = useState([]);
+  const [selectedChat, setSelectedChat] = useState("");
 
   useEffect(() => {
     getListRoomHit({ token: token });
+    dispatch(emptySelectedRoom());
   }, []);
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(data.data);
       setDataResult(data.data);
       if (data.data.length === 0) {
         setError((error) => ({
@@ -43,6 +50,11 @@ function ListRoomChat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
+  const handleSelectedChat = async (uuidRoom) => {
+    console.log(uuidRoom);
+    dispatch(addSelectedRoom(uuidRoom));
+    setSelectedChat(uuidRoom);
+  };
   return (
     <div class="p-3 flex-shrink-1 w-25 bg-white  ms-2 mb-2 mt-2 me-2 h-100 rounded">
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -68,8 +80,14 @@ function ListRoomChat() {
                       href={"#"}
                       className="text-decoration-none mb-3"
                       key={item.id}
+                      onClick={() => handleSelectedChat(item.id)}
                     >
-                      <Card className="card-list p-2  d-flex flex-row align-items-center mb-2">
+                      <Card
+                        className={
+                          "p-2  d-flex flex-row align-items-center mb-2 card-list"
+                        }
+                        bg={selectedRoom === item.id ? "info " : "light"}
+                      >
                         <div>
                           {item.isGroup === false ? (
                             <Image

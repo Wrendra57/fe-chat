@@ -15,6 +15,16 @@ const chatApi = createApi({
       }),
       invalidatesTags: ["Chat"],
     }),
+    createPersonalChat: build.mutation({
+      query: ({ token, uuid }) => ({
+        url: `api/v1/roomChatsPersonal/${uuid}`,
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
     // register: build.mutation({
     //   query: ({ body }) => ({
     //     url: `api/v1/users/register`,
@@ -82,7 +92,8 @@ const chatApi = createApi({
   }),
 });
 
-export const { useGetListRoomMutation } = chatApi;
+export const { useGetListRoomMutation, useCreatePersonalChatMutation } =
+  chatApi;
 
 export default chatApi;
 
