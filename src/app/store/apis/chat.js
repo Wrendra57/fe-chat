@@ -25,75 +25,47 @@ const chatApi = createApi({
       }),
       invalidatesTags: ["Chat"],
     }),
-    // register: build.mutation({
-    //   query: ({ body }) => ({
-    //     url: `api/v1/users/register`,
-    //     method: "POST",
-    //     body: body,
-    //   }),
-    //   invalidatesTags: ["Auth"],
-    // }),
-    // verification: build.mutation({
-    //   query: ({ body, otp }) => ({
-    //     url: `api/v1/users/otp/${otp}`,
-    //     method: "POST",
-    //     body: body,
-    //   }),
-    //   invalidatesTags: ["Auth"],
-    // }),
-    // login: build.mutation({
-    //   query: ({ body }) => ({
-    //     url: `api/v1/users/login`,
-    //     method: "POST",
-    //     body: body,
-    //   }),
-    //   invalidatesTags: ["Auth"],
-    // }),
-    // authentication: build.mutation({
-    //   query: ({ token }) => ({
-    //     url: `api/v1/users`,
-    //     method: "GET",
-    //     headers: {
-    //       authorization: `Bearer ${token}`,
-    //     },
-    //   }),
-    //   invalidatesTags: ["Auth"],
-    // }),
-    // searchUsers: build.mutation({
-    //   query: ({ token, nameSearch }) => ({
-    //     url: `api/v1/users/${nameSearch}`,
-    //     method: "GET",
-    //     headers: {
-    //       authorization: `Bearer ${token}`,
-    //     },
-    //   }),
-    //   invalidatesTags: ["Auth"],
-    // }),
-    // forgotPassword:
-    // changePassword: build.mutation({
-    //   query: (body) => ({
-    //     url: `api/forget-password/change-password`,
-    //     method: "POST",
-    //     body: body,
-    //   }),
-    //   invalidatesTags: ["Auth"],
-    // }),
-    // logout: build.mutation({
-    //   query: (token) => ({
-    //     url: `api/logout`,
-    //     method: "GET",
-    //     headers: {
-    //       authorization: `Bearer ${token}`,
-    //     },
-    //     responseHandler: "text/html",
-    //   }),
-    //   invalidatesTags: ["Auth"],
-    // }),
+    getHeaderChat: build.mutation({
+      query: ({ token, roomId }) => ({
+        url: `api/v1/headerChats/${roomId}`,
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+    getAllChat: build.mutation({
+      query: ({ token, roomId }) => ({
+        url: `api/v1/Chats/${roomId}`,
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+    sendChat: build.mutation({
+      query: ({ token, body }) => ({
+        url: `/api/v1/Chats`,
+        method: "POST",
+        body: body,
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
   }),
 });
 
-export const { useGetListRoomMutation, useCreatePersonalChatMutation } =
-  chatApi;
+export const {
+  useSendChatMutation,
+  useGetListRoomMutation,
+  useCreatePersonalChatMutation,
+  useGetAllChatMutation,
+  useGetHeaderChatMutation,
+} = chatApi;
 
 export default chatApi;
 

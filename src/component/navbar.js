@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "react-bootstrap";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -16,15 +16,20 @@ import {
   emptyUser,
 } from "@/app/store/slices/authSlice";
 import { toast, ToastContainer } from "react-toastify";
-
-function Navbar() {
+import { socket } from "@/app/chats/page";
+function Navbar({
+  fetchAgain,
+  setFetchAgain,
+  fetchListRoom,
+  setFetchListRoom,
+}) {
   const router = useRouter();
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
-
+  const notifRef = useRef({});
   const [
     authenticationsHit,
     {
@@ -49,15 +54,19 @@ function Navbar() {
   useEffect(() => {
     if (isSuccess) {
       dispatch(addUser(dataAuthentication.data));
+
+      if (Object.keys(user).length !== 0) {
+        socket.emit("subscribe-notification", { uuid: user.uuid });
+      }
       // dispatch(addToken(localStorage.getItem("token")));
       // dispatch(addEmail(dataAuthentication.data.email));
     }
 
     if (isError) {
-      console.log(errorAuthentication);
-      toast.error(`${errorAuthentication.data.message}`, {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      // console.log(errorAuthentication);
+      // toast.error(`${errorAuthentication.data.message}`, {
+      //   position: toast.POSITION.TOP_RIGHT,
+      // });
       dispatch(emptyToken({}));
       dispatch(emptyEmail(""));
       dispatch(emptyUser({}));
@@ -65,7 +74,35 @@ function Navbar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
+  useEffect(() => {
+    socket.on("receive-notif", (data) => {
+      // console.log(data);
+
+      if (!notifRef.current.created_at) {
+        notifRef.current = data;
+        // setAllChat((list) => [...list, data]);
+        console.log("notifRef");
+        setFetchListRoom((item) => !item);
+        toast.info(`Pesan baru dari ${data.User.name}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+      if (notifRef.current.created_at) {
+        if (notifRef.current.created_at !== data.created_at) {
+          notifRef.current = data;
+          console.log("notifRef");
+          // setAllChat((list) => [...list, data]);
+          setFetchListRoom((item) => !item);
+          toast.info(`Pesan baru dari ${data.User.name}`, {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        }
+      }
+    });
+  }, [socket]);
+
   const handleLogout = () => {
+    socket.emit("unsubscribe-notification", { uuid: user.uuid });
     dispatch(emptyToken({}));
     dispatch(emptyEmail(""));
     dispatch(emptyUser({}));
@@ -74,6 +111,7 @@ function Navbar() {
     localStorage.removeItem("uuid");
     router.push(`/`);
   };
+
   return (
     <>
       <div className="bg-white d-flex justify-content-between align-items-center px-3">
@@ -85,7 +123,12 @@ function Navbar() {
           >
             Search
           </Button>
-          <SearchUsers show={show} setShow={setShow} />
+          <SearchUsers
+            show={show}
+            setShow={setShow}
+            fetchAgain={fetchAgain}
+            setFetchAgain={setFetchAgain}
+          />
         </div>
         <h1>Chat App</h1>
         <div>

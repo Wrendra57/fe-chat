@@ -5,18 +5,30 @@ import Form from "react-bootstrap/Form";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchUsersMutation } from "@/app/store/apis/authentication";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Spinner from "react-bootstrap/Spinner";
 import Skeleton from "react-loading-skeleton";
+import { useCreatePersonalChatMutation } from "@/app/store/apis/chat";
+import { addSelectedRoom } from "@/app/store/slices/chatSlice";
 
-
-function SearchUsers({ show, setShow }) {
+function SearchUsers({ show, setShow, fetchAgain, setFetchAgain }) {
   const formRef = useRef({});
-
+  const dispatch = useDispatch();
   const [error, setError] = useState({});
   const token = useSelector((state) => state.auth.token);
   const [searchUsersHit, { isLoading, isError, error: err, isSuccess, data }] =
     useSearchUsersMutation();
+  const [
+    createChatPersonalHit,
+    {
+      isLoading: isLoadingCreate,
+      isError: isErrorCreate,
+      error: errCreate,
+      isSuccess: isSuccessCreate,
+      data: dataCreate,
+    },
+  ] = useCreatePersonalChatMutation();
+
   const [dataResult, setDataResult] = useState([]);
 
   const handleClose = () => {
@@ -40,9 +52,10 @@ function SearchUsers({ show, setShow }) {
     searchUsersHit({ token: token, nameSearch: searchName.value });
   };
 
-  const createChat = (e)=>{
-    
-  }
+  const handleCreateChat = ({ uuid }) => {
+    console.log(uuid);
+    createChatPersonalHit({ token: token, uuid: uuid });
+  };
   useEffect(() => {
     if (isSuccess) {
       // console.log(data.data);
@@ -66,6 +79,21 @@ function SearchUsers({ show, setShow }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
+  useEffect(() => {
+    if (isSuccessCreate) {
+      if (dataCreate) {
+        // console.log(dataCreate.data[0].room_id);
+        dispatch(addSelectedRoom(dataCreate.data[0].room_id));
+        setFetchAgain(!fetchAgain);
+        handleClose();
+      }
+    }
+
+    if (isErrorCreate) {
+      console.log(errCreate);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoadingCreate]);
   return (
     <Offcanvas show={show} onHide={handleClose} scroll={false} backdrop={true}>
       <Offcanvas.Header closeButton>
@@ -112,6 +140,7 @@ function SearchUsers({ show, setShow }) {
                       href={"#"}
                       className="text-decoration-none "
                       key={item.uuid}
+                      onClick={(data) => handleCreateChat({ uuid: item.uuid })}
                     >
                       <Card className="card-list p-2  d-flex flex-row align-items-center mb-2">
                         <div>

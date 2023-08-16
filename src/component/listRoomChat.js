@@ -11,8 +11,13 @@ import {
   addSelectedRoom,
   emptySelectedRoom,
 } from "@/app/store/slices/chatSlice";
-
-function ListRoomChat() {
+import { socket } from "@/app/chats/page";
+function ListRoomChat({
+  fetchAgain,
+  setFetchAgain,
+  fetchListRoom,
+  setFetchListRoom,
+}) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const selectedRoom = useSelector((state) => state.chat.selectedRoom);
@@ -28,8 +33,15 @@ function ListRoomChat() {
   }, []);
 
   useEffect(() => {
+    console.log("jalanlistroom terima pesan");
+    getListRoomHit({ token: token });
+  }, [fetchListRoom]);
+
+  useEffect(() => {
     if (isSuccess) {
       setDataResult(data.data);
+      console.log("123");
+      console.log(data.data);
       if (data.data.length === 0) {
         setError((error) => ({
           ...error,
@@ -52,11 +64,17 @@ function ListRoomChat() {
 
   const handleSelectedChat = async (uuidRoom) => {
     console.log(uuidRoom);
+    if (selectedRoom !== "") {
+      socket.emit("leave-room", { roomId: selectedRoom });
+    }
     dispatch(addSelectedRoom(uuidRoom));
+    const roomId = uuidRoom;
+    socket.emit("join-room", { roomId });
     setSelectedChat(uuidRoom);
+    setFetchAgain(!fetchAgain);
   };
   return (
-    <div class="p-3 flex-shrink-1 w-25 bg-white  ms-2 mb-2 mt-2 me-2 h-100 rounded">
+    <div className="p-3 flex-shrink-1 w-25 bg-white  ms-2 mb-2 mt-2 me-2 h-100 rounded">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2>My Chats</h2>
         <Button
@@ -98,6 +116,7 @@ function ListRoomChat() {
                               }
                               width={32}
                               height={32}
+                              alt="avatar"
                             />
                           ) : (
                             <Image
@@ -108,23 +127,24 @@ function ListRoomChat() {
                               }
                               width={32}
                               height={32}
+                              alt="profil"
                             />
                           )}
                         </div>
                         {item.isGroup === false ? (
-                          <div className="d-flex flex-column  ms-1">
+                          <div className="d-flex flex-column  ms-1 flex-grow-1">
                             <h6 className="mb-0">{item.name}</h6>
                             <span style={{ fontSize: "12px" }}>
-                              {item.message
+                              {item.messages
                                 ? item.messages
                                 : "belum ada pesan masuk"}
                             </span>
                           </div>
                         ) : (
-                          <div className="d-flex flex-column  ms-1">
+                          <div className="d-flex flex-column  ms-1 flex-grow-1">
                             <h6 className="mb-0">{item.nameGroup}</h6>
                             <span style={{ fontSize: "12px" }}>
-                              {item.message
+                              {item.messages
                                 ? item.messages
                                 : "belum ada pesan masuk"}
                             </span>

@@ -70,6 +70,7 @@ function Login() {
         localStorage.setItem("uuid", dataLogin.data.uuid);
         localStorage.setItem("email", formRef.current.email.value);
       }
+      router.push("/chats");
     }
     // console.log(email);
 
@@ -87,7 +88,7 @@ function Login() {
 
   return (
     <>
-      <Form>
+      <Form bg={"light"}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email</Form.Label>
           <Form.Control

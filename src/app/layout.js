@@ -7,6 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-loading-skeleton/dist/skeleton.css";
 // import { useEffect } from "react";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {

@@ -27,9 +27,9 @@ Handle on hover
 .card-list:hover {
   background-color: #0dcaf0 !important
 }
-.active {
+/* .active {
   background-color: #38B2AC !important
-}
+} */
 .main-chat {
   height: 92% !important;
 }
@@ -55,7 +55,7 @@ Handle on hover
     overflow-y: scroll;
     overflow-x: hidden;
     display: flex;
-    align-items: end !important;
+    /* align-items: end !important; */
     bottom: 0px;
   }
   .chat-body .message-container::-webkit-scrollbar {
@@ -76,7 +76,7 @@ Handle on hover
     border-radius: 5px;
     color: white;
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     margin-right: 5px;
     margin-left: 5px;
     padding-right: 5px;
