@@ -56,6 +56,17 @@ const chatApi = createApi({
       }),
       invalidatesTags: ["Chat"],
     }),
+    createGroup: build.mutation({
+      query: ({ token, body }) => ({
+        url: `/api/v1/roomChatsGroup`,
+        method: "POST",
+        body: body,
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }),
+      invalidatesTags: ["Chat"],
+    }),
   }),
 });
 
@@ -65,6 +76,7 @@ export const {
   useCreatePersonalChatMutation,
   useGetAllChatMutation,
   useGetHeaderChatMutation,
+  useCreateGroupMutation,
 } = chatApi;
 
 export default chatApi;

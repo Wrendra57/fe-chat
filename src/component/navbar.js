@@ -17,6 +17,7 @@ import {
 } from "@/app/store/slices/authSlice";
 import { toast, ToastContainer } from "react-toastify";
 import { socket } from "@/app/chats/page";
+import ProfilUser from "./profilUser";
 function Navbar({
   fetchAgain,
   setFetchAgain,
@@ -30,6 +31,8 @@ function Navbar({
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
   const notifRef = useRef({});
+  const [showProfil, setShowProfil] = useState(false);
+
   const [
     authenticationsHit,
     {
@@ -112,6 +115,11 @@ function Navbar({
     router.push(`/`);
   };
 
+  const handleShowProfile = async (e) => {
+    e.preventDefault();
+    setShowProfil(true);
+  };
+
   return (
     <>
       <div className="bg-white d-flex justify-content-between align-items-center px-3">
@@ -137,7 +145,9 @@ function Navbar({
               {user.name}
             </Dropdown.Toggle>
             <Dropdown.Menu className="super-colors">
-              <Dropdown.Item eventKey="1">Profile</Dropdown.Item>
+              <Dropdown.Item eventKey="1" onClick={handleShowProfile}>
+                Profile
+              </Dropdown.Item>
 
               <Dropdown.Divider />
               <Dropdown.Item eventKey="4" onClick={handleLogout}>
@@ -147,6 +157,7 @@ function Navbar({
           </Dropdown>{" "}
         </div>
       </div>
+      <ProfilUser showProfil={showProfil} setShowProfil={setShowProfil} />
     </>
   );
 }

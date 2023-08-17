@@ -12,6 +12,7 @@ import {
   emptySelectedRoom,
 } from "@/app/store/slices/chatSlice";
 import { socket } from "@/app/chats/page";
+import CreateGroup from "./createGroup";
 function ListRoomChat({
   fetchAgain,
   setFetchAgain,
@@ -21,11 +22,12 @@ function ListRoomChat({
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const selectedRoom = useSelector((state) => state.chat.selectedRoom);
-
+  const [error, setError] = useState({});
   const [getListRoomHit, { isLoading, isError, error: err, isSuccess, data }] =
     useGetListRoomMutation();
   const [dataResult, setDataResult] = useState([]);
   const [selectedChat, setSelectedChat] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     getListRoomHit({ token: token });
@@ -40,8 +42,8 @@ function ListRoomChat({
   useEffect(() => {
     if (isSuccess) {
       setDataResult(data.data);
-      console.log("123");
-      console.log(data.data);
+      // console.log("123");
+      // console.log(data.data);
       if (data.data.length === 0) {
         setError((error) => ({
           ...error,
@@ -63,7 +65,7 @@ function ListRoomChat({
   }, [isLoading]);
 
   const handleSelectedChat = async (uuidRoom) => {
-    console.log(uuidRoom);
+    // console.log(uuidRoom);
     if (selectedRoom !== "") {
       socket.emit("leave-room", { roomId: selectedRoom });
     }
@@ -73,6 +75,11 @@ function ListRoomChat({
     setSelectedChat(uuidRoom);
     setFetchAgain(!fetchAgain);
   };
+
+  const handleShowModal = async (e) => {
+    e.preventDefault();
+    setShowModal(true);
+  };
   return (
     <div className="p-3 flex-shrink-1 w-25 bg-white  ms-2 mb-2 mt-2 me-2 h-100 rounded">
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -80,7 +87,7 @@ function ListRoomChat({
         <Button
           type="submit"
           variant="outline-secondary"
-          // onClick={handleShow}
+          onClick={handleShowModal}
         >
           New Group Chat
         </Button>
@@ -161,6 +168,12 @@ function ListRoomChat({
           </>
         )}
       </div>
+      <CreateGroup
+        showModal={showModal}
+        setShowModal={setShowModal}
+        setFetchAgain={setFetchAgain}
+        setFetchListRoom={setFetchListRoom}
+      />
     </div>
   );
 }
