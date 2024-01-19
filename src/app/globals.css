@@ -96,3 +96,11 @@ Handle on hover
     justify-content: flex-end;
     background-color: cornflowerblue;
   }
+  .page{
+    width: 90% !important;
+  }
+@media only screen and (min-width: 768px) {
+  .page{
+    width: 25% !important;
+  }
+} 

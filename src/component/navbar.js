@@ -79,12 +79,13 @@ function Navbar({
 
   useEffect(() => {
     socket.on("receive-notif", (data) => {
-      // console.log(data);
+      // console.log("notif");
+      console.log(data);
 
       if (!notifRef.current.created_at) {
         notifRef.current = data;
         // setAllChat((list) => [...list, data]);
-        console.log("notifRef");
+        console.log("jalan 1");
         setFetchListRoom((item) => !item);
         toast.info(`Pesan baru dari ${data.User.name}`, {
           position: toast.POSITION.TOP_RIGHT,
@@ -93,7 +94,7 @@ function Navbar({
       if (notifRef.current.created_at) {
         if (notifRef.current.created_at !== data.created_at) {
           notifRef.current = data;
-          console.log("notifRef");
+          console.log("jalan2");
           // setAllChat((list) => [...list, data]);
           setFetchListRoom((item) => !item);
           toast.info(`Pesan baru dari ${data.User.name}`, {

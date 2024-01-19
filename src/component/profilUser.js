@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 import { useSelector } from "react-redux";
 function ProfilUser({ showProfil, setShowProfil }) {
   const user = useSelector((state) => state.auth.user);
-  console.log(user);
+  // console.log(user);
   return (
     <Modal
       show={showProfil}

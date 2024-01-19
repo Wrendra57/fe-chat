@@ -60,11 +60,11 @@ export default function Home() {
   }, [isLoading]);
   return (
     <>
-      <div className="d-flex flex-column w-25 bg-white justify-content-center mx-auto text-center mt-5 rounded-3 py-3 ">
+      <div className="d-flex flex-column  bg-white justify-content-center mx-auto text-center mt-5 rounded-3 py-3 page">
         <h1>Chat App</h1>
       </div>
       {verif === false ? (
-        <div className="d-flex flex-column w-25 bg-white justify-content-center mx-auto mt-5 rounded-3 p-4">
+        <div className="d-flex flex-column  bg-white justify-content-center mx-auto mt-5 rounded-3 p-4 page">
           <Tabs
             defaultActiveKey="profile"
             id="fill-tab-example"
